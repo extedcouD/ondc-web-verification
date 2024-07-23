@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tippyjs/react": "^4.2.6",
+    "@uiw/react-json-view": "^2.0.0-alpha.25",
     "ondc-crypto-sdk-nodejs": "^2.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.1"
+    "react-hook-form": "^7.52.1",
+    "react-icons": "^5.2.1",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/libsodium-wrappers": "^0.7.14",
