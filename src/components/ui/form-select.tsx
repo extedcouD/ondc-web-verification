@@ -7,7 +7,7 @@ const FormSelect = ({
   label,
   options,
   errors,
-  setSelectedValue,
+  setSelectedValue = (_: string) => {},
   defaultValue,
   labelInfo = "",
 }: any) => {

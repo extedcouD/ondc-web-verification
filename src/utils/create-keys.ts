@@ -16,6 +16,20 @@ function base64Encode(array: Uint8Array) {
   return window.btoa(binary);
 }
 
+function generateRandomString(length: number) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+}
+
+const randomString = generateRandomString(10);
+console.log(randomString);
+
 export function generateKeyPairs() {
   // Generate signing key pair
   const signingKeyPair = nacl.sign.keyPair();
@@ -30,5 +44,6 @@ export function generateKeyPairs() {
     Signing_public_key: base64Encode(signingKeyPair.publicKey),
     Encryption_Privatekey: base64Encode(encryptionKeyPair.secretKey),
     Encryption_Publickey: base64Encode(encryptionKeyPair.publicKey),
+    key_128: generateRandomString(16),
   };
 }

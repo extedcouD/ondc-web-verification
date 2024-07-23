@@ -11,22 +11,16 @@ export async function SignatureVerfication(
   signature: string
 ) {
   try {
-    //return [2 /*return*/, sodium.crypto_sign_verify_detached(sodium.from_base64(signedString, _sodium.base64_variants.ORIGINAL), signingString, sodium.from_base64(publicKey, _sodium.base64_variants.ORIGINAL))];
-
-    const verification = sodium.crypto_sign_verify_detached(
-      sodium.from_base64(signature, sodium.base64_variants.ORIGINAL),
-      raw_data,
-      sodium.from_base64(public_key, sodium.base64_variants.ORIGINAL)
-    );
+    await sodium.ready;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(raw_data);
+    const sig = sodium.from_base64(signature, sodium.base64_variants.ORIGINAL);
+    const key = sodium.from_base64(public_key, sodium.base64_variants.ORIGINAL);
+    const verification = sodium.crypto_sign_verify_detached(sig, data, key);
     return {
       validation: verification ? "Signature is valid" : "Signature is invalid",
     };
   } catch (err: any) {
-    console.log(
-      sodium.from_base64(signature, sodium.base64_variants.ORIGINAL),
-      raw_data,
-      sodium.from_base64(public_key, sodium.base64_variants.ORIGINAL)
-    );
     return {
       validation: "Signature is invalid",
       error: err.toString(),
@@ -68,23 +62,24 @@ interface Signature {
 }
 
 function parseSignature(signatureString: string): Signature {
-  const result: Partial<Signature> = {};
+  // Extract the parts of the header string
+  const regex =
+    /Signature keyId="([^"]+)",algorithm="([^"]+)",created="(\d+)",expires="(\d+)",headers="([^"]+)",signature="([^"]+)"/;
+  const match = signatureString.match(regex);
 
-  // Split the string by commas to get individual key-value pairs
-  const pairs = signatureString.split(",").map((pair) => pair.trim());
+  if (!match) {
+    throw new Error("Invalid header string format");
+  }
 
-  pairs.forEach((pair) => {
-    // Split each pair by the '=' sign
-    const [key, value] = pair
-      .split("=")
-      .map((part) => part.trim().replace(/^"(.*)"$/, "$1")); // Remove surrounding quotes
-    if (key && value) {
-      //@ts-ignore
-      result[key] = value;
-    }
-  });
-
-  return result as Signature;
+  // Map the extracted values to the SignatureHeader object
+  return {
+    keyId: match[1],
+    algorithm: match[2],
+    created: parseInt(match[3], 10).toString(),
+    expires: parseInt(match[4], 10).toString(),
+    headers: match[5],
+    signature: match[6],
+  };
 }
 
 export async function CreateHeader(

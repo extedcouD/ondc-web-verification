@@ -1,0 +1,26 @@
+/* Result Container */
+.result-container {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse; /* Ensure new items are pushed to the top */
+}
+
+/* Result Transition */
+.result-enter {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.result-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 500ms, opacity 500ms;
+}
+.result-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+.result-exit-active {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 500ms, opacity 500ms;
+}

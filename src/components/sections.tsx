@@ -1,5 +1,6 @@
 import CreateHeaderForm from "./forms/create-header";
 import CreateKeys from "./forms/create-keys";
+import { EnryptionForm } from "./forms/encryption-forms";
 import SigVerificationFormComponent, {
   VerifyHeaderForm,
 } from "./forms/sign-verication";
@@ -41,6 +42,15 @@ export function GenHeader() {
         GENERATE HEADER
       </h2>
       <CreateHeaderForm />
+    </div>
+  );
+}
+
+export function EncryptionSection() {
+  return (
+    <div className="bg-white dark:bg-gray-800 text-gray-800 shadow-md rounded-lg p-6">
+      <h2 className="text-2xl font-bold mb-4 dark:text-white">ENCRYPTION</h2>
+      <EnryptionForm />
     </div>
   );
 }

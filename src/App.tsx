@@ -6,6 +6,7 @@ import {
   GenerateKeyPairs,
   GenHeader,
   HeaderVerify,
+  EncryptionSection,
 } from "./components/sections";
 import { ResultSection } from "./components/ResultSection";
 import { AppContext } from "./context/AppContext";
@@ -69,6 +70,7 @@ function App() {
         {activeTab === "HEADER VALIDATION" && <HeaderVerify />}
         {activeTab === "CREATE HEADER" && <GenHeader />}
         {activeTab === "GENERATE KEYS" && <GenerateKeyPairs />}
+        {activeTab === "ENCRYPTION" && <EncryptionSection />}
       </div>
     );
   }
