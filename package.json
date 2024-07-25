@@ -1,7 +1,7 @@
 {
-  "name": "my-react-app",
+  "name": "ondc-crypt-web-util",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
