@@ -27,7 +27,7 @@ function App() {
   const numberRef = useRef(0);
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-    // setResult([]);
+    setResult([]);
   };
   const [darkMode, setDarkMode] = useState(
     document.documentElement.classList.contains("dark")
