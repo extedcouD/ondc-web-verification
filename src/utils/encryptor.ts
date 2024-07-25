@@ -1,6 +1,5 @@
 import CryptoJS from "crypto-js";
 import nacl from "tweetnacl";
-import forge from "node-forge";
 // Convert a Uint8Array to a Base64 string
 const uint8ArrayToBase64 = (uint8Array: Uint8Array): string => {
   // Convert the Uint8Array to a binary string

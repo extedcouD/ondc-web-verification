@@ -6,12 +6,11 @@ import {
   GenerateKeyPairs,
   GenHeader,
   HeaderVerify,
-  EncryptionSection,
+  // EncryptionSection,
 } from "./components/sections";
 import { ResultSection } from "./components/ResultSection";
 import { AppContext } from "./context/AppContext";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { set } from "react-hook-form";
 
 const tabs = [
   "SIGNATURE VALIDATION",

@@ -19,4 +19,5 @@ module.exports = {
     "warn",
     { vars: "all", args: "after-used", ignoreRestSiblings: true },
   ],
+  "no-unused-vars": "off",
 };

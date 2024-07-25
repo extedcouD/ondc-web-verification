@@ -6,6 +6,7 @@ export default defineConfig({
   css: {
     postcss: "./postcss.config.js",
   },
+
   server: {
     proxy: {
       "/staging": {

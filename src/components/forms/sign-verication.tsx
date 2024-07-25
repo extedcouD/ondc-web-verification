@@ -8,7 +8,6 @@ import {
 import { FormInput, FormTextInput } from "../ui/form-input";
 import GenericForm from "../ui/generic-form";
 import FormSelect from "../ui/form-select";
-import { get } from "react-hook-form";
 
 export default function SigVerificationForm() {
   const appContext = useContext(AppContext);

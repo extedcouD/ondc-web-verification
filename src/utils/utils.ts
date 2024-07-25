@@ -1,5 +1,4 @@
 // import { createAuthorizationHeader } from "ondc-crypto-sdk-nodejs";
-import axios from "axios";
 import {
   createAuthorizationHeader,
   isHeaderValid,
