@@ -12,7 +12,8 @@ import FormSelect from "../ui/form-select";
 
 interface EncryptionData {
   data: string;
-  key: string;
+  publicKey: string;
+  privateKey: string;
   algorithm: string;
   type: string;
   iv?: string;
@@ -31,10 +32,10 @@ export function EnryptionForm() {
     if (data.type === "Decrypt") return;
     let res;
     if (data.algorithm === "AES-GCM") {
-      res = await aesGcmEncrypt(data.data, data.key);
+      res = await aesGcmEncrypt(data.data, data.privateKey, data.publicKey);
     }
     if (data.algorithm === "AES-ECB") {
-      res = await aesEcbEncrypt(data.data, data.key);
+      res = await aesEcbEncrypt(data.data, data.privateKey, data.publicKey);
     }
     appContext.pushResult(JSON.stringify(res));
   }
@@ -42,10 +43,10 @@ export function EnryptionForm() {
     if (data.type === "Encrypt") return;
     let res;
     if (data.algorithm === "AES-GCM" && data.iv) {
-      res = await aesGcmDecrypt(data.data, data.key, data.iv);
+      res = await aesGcmDecrypt(data.data, data.publicKey, data.iv);
     }
     if (data.algorithm === "AES-ECB") {
-      res = await aesEcbDecrypt(data.data, data.key);
+      res = await aesEcbDecrypt(data.data, data.privateKey, data.publicKey);
     }
     appContext.pushResult(JSON.stringify(res));
   }
@@ -67,7 +68,8 @@ export function EnryptionForm() {
         required
       />
       <FormTextInput name="data" label="Data" required />
-      <FormInput name="key" label="private Key" required />
+      <FormInput name="privateKey" label="private Key" required />
+      <FormInput name="publicKey" label="public Key" required />
       {type === "Decrypt" && algorithm === "AES-GCM" ? (
         <FormInput name="iv" label="initialization_vector" required />
       ) : (

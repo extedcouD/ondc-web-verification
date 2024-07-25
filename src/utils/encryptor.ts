@@ -1,13 +1,51 @@
 import CryptoJS from "crypto-js";
+import nacl from "tweetnacl";
+import forge from "node-forge";
+// Convert a Uint8Array to a Base64 string
+const uint8ArrayToBase64 = (uint8Array: Uint8Array): string => {
+  // Convert the Uint8Array to a binary string
+  const binaryString = Array.from(uint8Array)
+    .map((byte) => String.fromCharCode(byte))
+    .join("");
+  // Convert binary string to Base64
+  return btoa(binaryString);
+};
 
-export const aesEcbEncrypt = (data: string, key: string) => {
+// Convert a Base64 string to a Uint8Array
+const base64ToUint8Array = (base64: string): Uint8Array => {
+  // Convert Base64 string to binary string
+  const binaryString = atob(base64);
+  // Convert binary string to Uint8Array
+  const len = binaryString.length;
+  const uint8Array = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    uint8Array[i] = binaryString.charCodeAt(i);
+  }
+  return uint8Array;
+};
+
+const generateUnifiedKey = (privateKey: string, otherPublicKey: string) => {
+  const privateKeyUint8 = base64ToUint8Array(privateKey);
+  const otherPublicKeyUint8 = base64ToUint8Array(otherPublicKey);
+
+  const unifiedKey = nacl.box.before(otherPublicKeyUint8, privateKeyUint8);
+
+  // Return the shared key as a base64 string
+  return uint8ArrayToBase64(unifiedKey);
+};
+
+export const aesEcbEncrypt = (
+  data: string,
+  privateKey: string,
+  publicKey: string
+) => {
   try {
-    // Ensure the key is 16 bytes for AES-128
-    const keyUtf8 = CryptoJS.enc.Utf8.parse(key.padEnd(16, " ")); // Pad key if necessary
+    const unifiedKey = generateUnifiedKey(privateKey, publicKey);
+    // const unifiedKey =
+    // const finalKey = CryptoJS.enc.Utf8.parse(unifiedKey);
     const dataUtf8 = CryptoJS.enc.Utf8.parse(data);
-
-    // Encrypt the data
-    const encrypted = CryptoJS.AES.encrypt(dataUtf8, keyUtf8, {
+    console.log(unifiedKey, "unifiedKey");
+    const encrypted = CryptoJS.AES.encrypt(dataUtf8, unifiedKey, {
       mode: CryptoJS.mode.ECB,
       padding: CryptoJS.pad.Pkcs7,
     });
@@ -18,13 +56,18 @@ export const aesEcbEncrypt = (data: string, key: string) => {
   }
 };
 
-export const aesEcbDecrypt = (encryptedData: string, key: string) => {
+export const aesEcbDecrypt = (
+  encryptedData: string,
+  privateKey: string,
+  publicKey: string
+) => {
   try {
     // Ensure the key is 16 bytes for AES-128
-    const keyUtf8 = CryptoJS.enc.Utf8.parse(key.padEnd(16, " ")); // Pad key if necessary
+    // const keyUtf8 = CryptoJS.enc.Utf8.parse(key.padEnd(16, " ")); // Pad key if necessary
+    const unifiedKey = generateUnifiedKey(privateKey, publicKey);
 
     // Decrypt the data
-    const decrypted = CryptoJS.AES.decrypt(encryptedData, keyUtf8, {
+    const decrypted = CryptoJS.AES.decrypt(encryptedData, unifiedKey, {
       mode: CryptoJS.mode.ECB,
       padding: CryptoJS.pad.Pkcs7,
     });
@@ -39,9 +82,14 @@ const generateIv = () => {
   return crypto.getRandomValues(new Uint8Array(12)); // AES-GCM standard IV length is 12 bytes
 };
 
-export const aesGcmEncrypt = async (data: string, key: string) => {
+export const aesGcmEncrypt = async (
+  data: string,
+  privateKey: string,
+  publicKey: string
+) => {
   try {
-    const encodedKey = new TextEncoder().encode(key);
+    const unifiedKey = generateUnifiedKey(privateKey, publicKey);
+    const encodedKey = new TextEncoder().encode(unifiedKey);
     const encodedData = new TextEncoder().encode(data);
     const iv = generateIv();
 

@@ -2,7 +2,7 @@ import React from "react";
 import { inputClass, LabelWithToolTip } from "./form-input";
 
 const FormSelect = ({
-  register,
+  register = (_: any) => {},
   name,
   label,
   options,
@@ -19,7 +19,6 @@ const FormSelect = ({
     <>
       <div className="mb-4">
         <LabelWithToolTip labelInfo={labelInfo} label={label} />
-
         <select
           {...register(name)}
           className={inputClass}
@@ -41,7 +40,9 @@ const FormSelect = ({
             );
           })}
         </select>
-        {errors[name] && <p className="text-red-500">{errors[name].message}</p>}
+        {errors && errors[name] && (
+          <p className="text-red-500">{errors[name].message}</p>
+        )}
       </div>
     </>
   );

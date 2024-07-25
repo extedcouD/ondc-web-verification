@@ -23,7 +23,7 @@ export function ResultSection() {
         <TransitionGroup className="result-container">
           {results.map((result, index) => (
             <CSSTransition key={index} timeout={500} classNames="result">
-              <div className="bg-white max-w-xl dark:bg-gray-800 border border-gray-300 dark:border-gray-600 p-4 rounded-lg shadow-md mb-4">
+              <div className="bg-white max-w-xl dark:bg-json-view-bg border border-gray-300 dark:border-gray-600 p-4 rounded-lg shadow-md mb-4">
                 <h3 className="text-sm font-bold dark:text-white text-black mb-2">
                   Result {result.index}
                 </h3>

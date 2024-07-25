@@ -1,8 +1,9 @@
 // import { createAuthorizationHeader } from "ondc-crypto-sdk-nodejs";
-import sodium from "libsodium-wrappers";
+import axios from "axios";
 import {
   createAuthorizationHeader,
   isHeaderValid,
+  verifyMessage,
 } from "ondc-crypto-sdk-nodejs";
 
 export async function SignatureVerfication(
@@ -11,12 +12,11 @@ export async function SignatureVerfication(
   signature: string
 ) {
   try {
-    await sodium.ready;
-    const encoder = new TextEncoder();
-    const data = encoder.encode(raw_data);
-    const sig = sodium.from_base64(signature, sodium.base64_variants.ORIGINAL);
-    const key = sodium.from_base64(public_key, sodium.base64_variants.ORIGINAL);
-    const verification = sodium.crypto_sign_verify_detached(sig, data, key);
+    const verification = await verifyMessage({
+      signedString: raw_data,
+      signingString: signature,
+      publicKey: public_key,
+    });
     return {
       validation: verification ? "Signature is valid" : "Signature is invalid",
     };
@@ -44,6 +44,40 @@ export async function HeaderVerification(
         ? "SUCCESS : Header is Valid"
         : "FAIL : Header is INVALID",
     };
+  } catch (err: any) {
+    return {
+      validation: "Header is invalid",
+      error: err.toString(),
+    };
+  }
+}
+
+export async function HeaderVerificationLookup(
+  payload: string,
+  header: string,
+  lookup: string
+  // ukId: string,
+  // subscriberId: string
+) {
+  try {
+    const headerParsed = parseSignature(header);
+
+    let res: any = await fetch(`/${lookup}`, {
+      method: "POST",
+      body: JSON.stringify({
+        ukId: headerParsed.keyId.split("|")[1],
+        subscriber_id: headerParsed.keyId.split("|")[0],
+      }),
+    });
+    res = await res.json();
+    if (res.length === 0) {
+      return {
+        validation: "Header is invalid",
+        error: "Public key not found",
+      };
+    }
+    const key = res[0].publicKey;
+    return HeaderVerification(payload, header, key);
   } catch (err: any) {
     return {
       validation: "Header is invalid",

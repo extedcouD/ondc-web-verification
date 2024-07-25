@@ -1,5 +1,4 @@
 import nacl from "tweetnacl";
-
 function randomBytes(length: number) {
   const array = new Uint8Array(length);
   window.crypto.getRandomValues(array);
@@ -30,7 +29,7 @@ function generateRandomString(length: number) {
 const randomString = generateRandomString(10);
 console.log(randomString);
 
-export function generateKeyPairs() {
+export async function generateKeyPairs() {
   // Generate signing key pair
   const signingKeyPair = nacl.sign.keyPair();
 
